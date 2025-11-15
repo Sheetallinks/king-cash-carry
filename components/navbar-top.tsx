@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useMemo } from "react"
 import { ShoppingCart, Search, Globe } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -14,14 +14,11 @@ interface NavbarTopProps {
   onCartClick: () => void
 }
 
-// Flatten all products from all categories
-const allProducts = Object.values(categoryProducts).flat()
-
 export default function NavbarTop({ cartCount, onCartClick }: NavbarTopProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [showLanguages, setShowLanguages] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [suggestions, setSuggestions] = useState<typeof allProducts>([])
+  const [suggestions, setSuggestions] = useState<Array<{ id: string; name: string; price: number; image: string; category: string; rating: number; description: string }>>([])
   const searchRef = useRef<HTMLDivElement>(null)
   const { language, setLanguage, t } = useLanguage()
   const router = useRouter()
@@ -31,9 +28,19 @@ export default function NavbarTop({ cartCount, onCartClick }: NavbarTopProps) {
     { code: "pt", name: "Português (Portugal)" },
   ]
 
+  // Flatten all products from all categories (memoized to avoid recalculation)
+  const allProducts = useMemo(() => {
+    try {
+      return Object.values(categoryProducts).flat()
+    } catch (error) {
+      console.error("Error loading products:", error)
+      return []
+    }
+  }, [])
+
   // Update suggestions based on search query
   useEffect(() => {
-    if (searchQuery.trim().length > 0) {
+    if (searchQuery.trim().length > 0 && allProducts.length > 0) {
       const filtered = allProducts
         .filter(
           (product) =>
@@ -48,7 +55,7 @@ export default function NavbarTop({ cartCount, onCartClick }: NavbarTopProps) {
       setSuggestions([])
       setShowSuggestions(false)
     }
-  }, [searchQuery])
+  }, [searchQuery, allProducts])
 
   // Close suggestions when clicking outside
   useEffect(() => {

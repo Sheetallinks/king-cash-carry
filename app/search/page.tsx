@@ -1,17 +1,24 @@
 "use client"
 
-import { Suspense } from "react"
+import { Suspense, useMemo } from "react"
 import { useSearchParams } from "next/navigation"
 import PageLayout from "@/components/page-layout"
 import Link from "next/link"
 import { categoryProducts } from "@/lib/products-data"
 
-// Flatten all products from all categories into a single array
-const allProducts = Object.values(categoryProducts).flat()
-
 function SearchResults() {
   const searchParams = useSearchParams()
   const query = searchParams.get("q") || ""
+
+  // Flatten all products from all categories into a single array (memoized)
+  const allProducts = useMemo(() => {
+    try {
+      return Object.values(categoryProducts).flat()
+    } catch (error) {
+      console.error("Error loading products:", error)
+      return []
+    }
+  }, [])
 
   const results = allProducts.filter(
     (product) =>
