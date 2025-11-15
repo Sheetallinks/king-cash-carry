@@ -4,125 +4,10 @@ import { Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import PageLayout from "@/components/page-layout"
 import Link from "next/link"
+import { categoryProducts } from "@/lib/products-data"
 
-const allProducts = [
-  { id: "v1", name: "Fresh Tomato", price: 40, image: "/fresh-red-tomato.jpg", category: "Vegetables", rating: 4.5 },
-  { id: "v2", name: "Golden Onion", price: 35, image: "/golden-onion.jpg", category: "Vegetables", rating: 4.3 },
-  {
-    id: "v3",
-    name: "Fresh Spinach",
-    price: 30,
-    image: "/fresh-green-spinach.jpg",
-    category: "Vegetables",
-    rating: 4.7,
-  },
-  { id: "v4", name: "Orange Carrot", price: 45, image: "/orange-carrot.png", category: "Vegetables", rating: 4.6 },
-  { id: "f1", name: "Fresh Red Apple", price: 80, image: "/fresh-red-apple.png", category: "Fruits", rating: 4.8 },
-  { id: "f2", name: "Yellow Bananas", price: 50, image: "/yellow-banana-bunch.png", category: "Fruits", rating: 4.6 },
-  { id: "f3", name: "Orange", price: 60, image: "/images/orange.png", category: "Fruits", rating: 4.5 },
-  { id: "f4", name: "Ripe Mango", price: 100, image: "/ripe-mango-fruit.jpg", category: "Fruits", rating: 4.9 },
-  { id: "s1", name: "Turmeric Powder", price: 120, image: "/turmeric-powder.png", category: "Spices", rating: 4.7 },
-  { id: "s2", name: "Cumin Seeds", price: 150, image: "/cumin-seeds-spice.jpg", category: "Spices", rating: 4.6 },
-  { id: "s3", name: "Chili Powder", price: 100, image: "/red-chili-powder.jpg", category: "Spices", rating: 4.8 },
-  { id: "s4", name: "Coriander", price: 130, image: "/coriander-powder.jpg", category: "Spices", rating: 4.5 },
-  { id: "d1", name: "Fresh Milk", price: 65, image: "/fresh-milk-carton.jpg", category: "Dairy", rating: 4.7 },
-  { id: "d2", name: "Yogurt", price: 50, image: "/yogurt-container.jpg", category: "Dairy", rating: 4.6 },
-  { id: "d3", name: "Cheese Block", price: 250, image: "/cheese-block.png", category: "Dairy", rating: 4.8 },
-  { id: "d4", name: "Butter", price: 180, image: "/butter-pack.jpg", category: "Dairy", rating: 4.5 },
-  { id: "b1", name: "Orange Juice", price: 80, image: "/orange-juice-bottle.jpg", category: "Beverages", rating: 4.6 },
-  { id: "b2", name: "Premium Tea", price: 200, image: "/premium-tea-leaves.jpg", category: "Beverages", rating: 4.8 },
-  {
-    id: "b3",
-    name: "Coffee Beans",
-    price: 250,
-    image: "/coffee-beans-roasted.jpg",
-    category: "Beverages",
-    rating: 4.9,
-  },
-  {
-    id: "b4",
-    name: "Mineral Water",
-    price: 30,
-    image: "/mineral-water-bottle.jpg",
-    category: "Beverages",
-    rating: 4.4,
-  },
-  {
-    id: "df1",
-    name: "California Almonds",
-    price: 500,
-    image: "/california-almonds-nuts.jpg",
-    category: "Dry Fruits",
-    rating: 4.9,
-  },
-  {
-    id: "df2",
-    name: "Cashew Nuts",
-    price: 450,
-    image: "/cashew-nuts-roasted.jpg",
-    category: "Dry Fruits",
-    rating: 4.8,
-  },
-  {
-    id: "df3",
-    name: "Black Raisins",
-    price: 200,
-    image: "/black-raisins-dried.jpg",
-    category: "Dry Fruits",
-    rating: 4.6,
-  },
-  {
-    id: "df4",
-    name: "Premium Dates",
-    price: 300,
-    image: "/premium-dates-fruit.jpg",
-    category: "Dry Fruits",
-    rating: 4.7,
-  },
-  { id: "c1", name: "Potato Chips", price: 40, image: "/crispy-potato-chips.jpg", category: "Chips", rating: 4.5 },
-  { id: "c2", name: "Corn Chips", price: 45, image: "/roasted-corn-chips.jpg", category: "Chips", rating: 4.6 },
-  { id: "c3", name: "Prawn Chips", price: 80, image: "/spicy-prawn-chips.jpg", category: "Chips", rating: 4.7 },
-  {
-    id: "c4",
-    name: "Vegetable Chips",
-    price: 50,
-    image: "/healthy-vegetable-chips.jpg",
-    category: "Chips",
-    rating: 4.8,
-  },
-  {
-    id: "bi1",
-    name: "Digestive Biscuits",
-    price: 60,
-    image: "/whole-wheat-digestive-biscuits.jpg",
-    category: "Biscuits",
-    rating: 4.6,
-  },
-  {
-    id: "bi2",
-    name: "Marie Biscuits",
-    price: 50,
-    image: "/light-crispy-marie-biscuits.jpg",
-    category: "Biscuits",
-    rating: 4.5,
-  },
-  {
-    id: "bi3",
-    name: "Chocolate Biscuits",
-    price: 70,
-    image: "/chocolate-biscuits.jpg",
-    category: "Biscuits",
-    rating: 4.7,
-  },
-  {
-    id: "bi4",
-    name: "Wafer Biscuits",
-    price: 65,
-    image: "/wafer-biscuits.jpg",
-    category: "Biscuits",
-    rating: 4.6,
-  },
-]
+// Flatten all products from all categories into a single array
+const allProducts = Object.values(categoryProducts).flat()
 
 function SearchResults() {
   const searchParams = useSearchParams()
@@ -131,7 +16,8 @@ function SearchResults() {
   const results = allProducts.filter(
     (product) =>
       product.name.toLowerCase().includes(query.toLowerCase()) ||
-      product.category.toLowerCase().includes(query.toLowerCase()),
+      product.category.toLowerCase().includes(query.toLowerCase()) ||
+      (product.description && product.description.toLowerCase().includes(query.toLowerCase())),
   )
 
   return (

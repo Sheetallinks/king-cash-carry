@@ -4,7 +4,6 @@ import type React from "react"
 
 import NavbarTop from "./navbar-top"
 import NavbarMain from "./navbar-main"
-import NavbarCategories from "./navbar-categories"
 import Footer from "./footer"
 import Cart from "./cart"
 import WhatsAppButton from "./whatsapp-button"
@@ -24,7 +23,6 @@ export default function PageLayout({ children }: PageLayoutProps) {
     <div className="bg-background text-foreground min-h-screen flex flex-col">
       <NavbarTop cartCount={cartItems.length} onCartClick={() => {}} />
       <NavbarMain />
-      <NavbarCategories />
 
       {showCart && <Cart items={cartItems} onRemove={removeFromCart} onClose={() => setShowCart(false)} />}
 
